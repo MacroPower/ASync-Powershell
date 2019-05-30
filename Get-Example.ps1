@@ -21,8 +21,7 @@ function Get-Example
       Start-Sleep -Seconds (Get-Random -Minimum 4 -Maximum 6)
     }
     
-    if($ASync) 
-    {
+    if($ASync) {
       $newRunspace = [runspacefactory]::CreateRunspace()
       $newRunspace.ApartmentState = 'STA'
       $newRunspace.ThreadOptions = 'ReuseThread'          
@@ -40,8 +39,8 @@ function Get-Example
             Runspace   = $PowerShell.BeginInvoke()
           }
       ))
-    } else 
-    {
+    } 
+    else {
       Invoke-Command -ScriptBlock $ScriptBlock
     }
   }
@@ -50,8 +49,7 @@ function Get-Example
       $JobsCompleted = [System.Collections.ArrayList]@()
       $Jobs | .{
         Process {
-          if ($_.Runspace.isCompleted) 
-          {
+          if($_.Runspace.isCompleted) {
             $_.Powershell.EndInvoke($_.Runspace)
             $_.Powershell.Dispose()
             $null = $JobsCompleted.Add($_)
