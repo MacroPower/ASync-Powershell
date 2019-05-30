@@ -1,9 +1,19 @@
 function Get-Example 
 {
+  <#
+    .SYNOPSIS
+    Takes a single scriptblock and parameter set, allows running syncronously or Asyncronously through the -Async parameter.
+
+    .PARAMETER Example
+    Sample parameter passed into the function. Could be one of many, bound to input or not.
+
+    .PARAMETER Async
+    Runs each process block in a runspace.
+  #>
   [CmdletBinding()]
   Param(
     [String][Parameter(ValueFromPipeline)]$Example,
-    [Switch]$ASync
+    [Switch]$Async
   )
   Begin {
     $paramList = (Get-Command -Name $PSCmdlet.MyInvocation.InvocationName).Parameters | .{
@@ -21,7 +31,7 @@ function Get-Example
       Start-Sleep -Seconds (Get-Random -Minimum 4 -Maximum 6)
     }
     
-    if($ASync) {
+    if($Async) {
       $newRunspace = [runspacefactory]::CreateRunspace()
       $newRunspace.ApartmentState = 'STA'
       $newRunspace.ThreadOptions = 'ReuseThread'          
@@ -33,7 +43,7 @@ function Get-Example
       }
       $PowerShell = [PowerShell]::Create().AddScript($ScriptBlock)
       $PowerShell.Runspace = $newRunspace
-      [void]$Jobs.Add((
+      $null = $Jobs.Add((
           [pscustomobject]@{
             PowerShell = $PowerShell
             Runspace   = $PowerShell.BeginInvoke()
@@ -61,9 +71,8 @@ function Get-Example
           $Jobs.Remove($_)
         }
       }
-    }
-    while ($Jobs)
+    } while ($Jobs)
   }
 }
 
-1..20 | Get-Example -ASync
+1..20 | Get-Example -Async
