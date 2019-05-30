@@ -2,10 +2,10 @@ function Get-Example
 {
   <#
     .SYNOPSIS
-    Takes a single scriptblock and parameter set, allows running syncronously or Asyncronously through the -Async parameter.
+    Takes a single scriptblock and parameter set, allows running synchronously or asynchronously through the -Async parameter.
 
     .PARAMETER Example
-    Sample parameter passed into the function. Could be one of many, bound to input or not.
+    Sample parameter passed into the function. Could be one of many, bound to $input or not.
 
     .PARAMETER Async
     Runs each process block in a runspace.
@@ -24,12 +24,14 @@ function Get-Example
     $Jobs = [System.Collections.ArrayList]@()
   }
   Process {
+    #------------------------------------------------------------
     $ScriptBlock = {
       Write-Output ('This is my command ' + $Example)
       
       #And this is how long it takes to run.
       Start-Sleep -Seconds (Get-Random -Minimum 4 -Maximum 6)
     }
+    #------------------------------------------------------------
     
     if($Async) {
       $newRunspace = [runspacefactory]::CreateRunspace()
