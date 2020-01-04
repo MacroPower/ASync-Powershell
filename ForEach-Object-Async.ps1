@@ -20,9 +20,6 @@ function ForEach-Object-Async {
     .EXAMPLE
     $x = 0; 1..10 | ForEach-Object-Async { $x++; Start-Sleep 5 }; $x
     Returns 1
-
-    .LINK
-    https://www.powershellgallery.com/packages/Start-parallel/1.3.0.0/Content/Start-parallel.psm1
   #>
 
   Param (
